@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EquityDesk — Portfolio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app"><div class="shell">
+<aside class="sidebar" id="sidebar">
+<div class="brand"><div class="brandmark">E</div><div><strong>EquityDesk</strong><small>PORTFOLIO INTELLIGENCE</small></div></div>
+<div><div class="nav-label">WORKSPACE</div><nav class="nav" id="nav">
+<button class="active" data-page="overview"><span class="ico">◫</span>Overview</button>
+<button data-page="holdings"><span class="ico">▤</span>My holdings</button>
+<button data-page="transactions"><span class="ico">↕</span>Transactions</button>
+<button data-page="analytics"><span class="ico">⌁</span>Analytics</button>
+</nav></div>
+<div><div class="nav-label">TOOLS</div><nav class="nav">
+<button data-page="simulator"><span class="ico">⚖</span>What-if simulator</button>
+<button data-page="journal"><span class="ico">✎</span>Decision journal</button>
+<button data-page="timetravel"><span class="ico">◷</span>Time travel</button>
+</nav></div>
+<div class="side-bottom"><div class="market-status"><div><span class="live-dot"></span>Demo market data</div><div style="margin-top:8px">Prices are illustrative, not live NSE/BSE quotes.</div></div></div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+<div style="display:flex;align-items:center;gap:12px">
+<button class="btn small mobile-menu" id="mobileMenu">☰</button>
+<div class="crumb">Workspace&nbsp; / &nbsp;<b id="crumb">Overview</b></div>
+</div>
+<div class="top-actions">
+<span class="date-label" id="today"></span>
+<button class="btn small" id="exportBtn">↓ Export CSV</button>
+<div class="avatar">TS</div>
+</div>
+</header>
+
+<div class="content">
+<section class="page active" id="page-overview">
+<div class="page-head">
+<div><div class="eyebrow">Your money, in perspective</div><h1>Good morning<span style="color:#4f8cff">.</span></h1><p>Here's how your investments are performing today.</p></div>
+<button class="btn primary" data-open-add>＋ Add transaction</button>
+</div>
+<div class="cards" id="metricCards"></div>
+<div class="dashboard-grid">
+<div class="panel">
+<div class="panel-head"><div><div class="panel-title">Portfolio performance</div><div class="panel-sub">Illustrative value over the selected period</div></div>
+<div class="range">
+<button class="active" data-range="1M">1M</button><button data-range="3M">3M</button><button data-range="6M">6M</button><button data-range="1Y">1Y</button><button data-range="ALL">ALL</button>
+</div></div>
+<div class="chart-wrap"><svg id="performanceChart" viewBox="0 0 700 225" preserveAspectRatio="none" aria-label="Portfolio performance chart"></svg></div>
+</div>
+<div class="panel">
+<div class="panel-head"><div><div class="panel-title">Asset allocation</div><div class="panel-sub">By current market value</div></div><span class="tag blue">Equity</span></div>
+<div class="allocation"><svg class="donut" id="donut" viewBox="0 0 160 160"></svg><div class="legend" id="legend"></div></div>
+</div>
+</div>
+<div class="panel table-panel">
+<div class="panel-head"><div><div class="panel-title">Top holdings</div><div class="panel-sub">Your largest positions by market value</div></div><button class="btn small" data-goto="holdings">View all holdings →</button></div>
+<div class="table-scroll"><table><thead><tr><th>Asset</th><th>Qty</th><th>Avg. cost</th><th>LTP</th><th>Market value</th><th>Unrealised P&amp;L</th></tr></thead><tbody id="topHoldings"></tbody></table></div>
+</div>
+<div class="panel" style="margin-top:15px">
+<div class="panel-head"><div><div class="panel-title">Recent activity</div><div class="panel-sub">Latest portfolio transactions</div></div><button class="btn small" data-goto="transactions">All activity →</button></div>
+<div class="activity" id="recentActivity"></div>
+</div>
+</section>
+
+<section class="page" id="page-holdings">
+<div class="page-head"><div><div class="eyebrow">Your investments</div><h1>My holdings</h1><p>Track quantities, cost basis and current position value.</p></div><button class="btn primary" data-open-add>＋ Add transaction</button></div>
+<div class="cards" id="holdingMetrics"></div>
+<div class="panel table-panel">
+<div class="panel-head"><div><div class="panel-title">All positions</div><div class="panel-sub">Prices in INR · Demo values</div></div><button class="btn small" id="priceUpdate">↻ Update demo prices</button></div>
+<div class="table-scroll"><table><thead><tr><th>Asset</th><th>Quantity</th><th>Avg. cost</th><th>Last price</th><th>Invested</th><th>Market value</th><th>Unrealised P&amp;L</th></tr></thead><tbody id="allHoldings"></tbody></table></div>
+</div>
+</section>
+
+<section class="page" id="page-transactions">
+<div class="page-head"><div><div class="eyebrow">Your activity log</div><h1>Transactions</h1><p>A complete, chronological record of your investment activity.</p></div><button class="btn primary" data-open-add>＋ Add transaction</button></div>
+<div class="panel table-panel">
+<div class="panel-head"><div><div class="panel-title">Transaction history</div><div class="panel-sub" id="txnCount"></div></div>
+<select id="txnFilter" class="btn small"><option value="ALL">All types</option><option>BUY</option><option>SELL</option><option>DIVIDEND</option></select>
+</div>
+<div class="table-scroll"><table><thead><tr><th>Date</th><th>Asset</th><th>Type</th><th>Quantity</th><th>Price</th><th>Fees</th><th>Total</th></tr></thead><tbody id="transactionsTable"></tbody></table></div>
+</div>
+</section>
+
+<section class="page" id="page-analytics">
+<div class="page-head"><div><div class="eyebrow">Understand your returns</div><h1>Analytics</h1><p>A clearer view of performance, allocation and portfolio health.</p></div></div>
+<div class="cards" id="analyticsMetrics"></div>
+<div class="dashboard-grid">
+<div class="panel"><div class="panel-head"><div><div class="panel-title">Position performance</div><div class="panel-sub">Unrealised gain or loss by stock</div></div></div><div id="performanceBars"></div></div>
+<div class="panel"><div class="panel-title">Portfolio breakdown</div><div class="panel-sub">Current value and invested capital</div><div id="breakdown" style="margin-top:15px"></div></div>
+</div>
+<p class="disclaimer">Performance shown is based on the demo transactions and illustrative prices in this browser prototype. It is not investment advice.</p>
+</section>
+
+<section class="page" id="page-simulator">
+<div class="page-head"><div><div class="eyebrow">Plan before you act</div><h1>What-if simulator</h1><p>Estimate the outcome of a hypothetical sale without changing your portfolio.</p></div></div>
+<div class="section-grid">
+<div class="panel"><div class="panel-title">Simulate a sale</div><div class="panel-sub" style="margin-bottom:18px">The demo uses FIFO cost basis for this estimate.</div>
+<div class="field"><label>Stock</label><select id="simSymbol"></select></div>
+<div class="form-grid"><div class="field"><label>Shares to sell</label><input id="simQty" type="number" min="1" value="5"></div><div class="field"><label>Expected sale price (₹)</label><input id="simPrice" type="number" min="0.01" step="0.01" value="0"></div></div>
+<div class="field"><label>Estimated selling fees (₹)</label><input id="simFees" type="number" min="0" step="0.01" value="20"></div>
+<button class="btn primary" id="runSimulation">Calculate scenario →</button><div id="simResult" style="margin-top:18px"></div>
+</div>
+<div class="panel"><div class="panel-title">How to read this</div><div class="statline"><span>Sale proceeds</span><b>Quantity × sale price</b></div><div class="statline"><span>Estimated cost basis</span><b>FIFO lots</b></div><div class="statline"><span>Estimated P&amp;L</span><b>Net proceeds − cost</b></div><p class="disclaimer">This prototype does not calculate statutory taxes, brokerage schedules, STT, exchange charges or actual tax-lot records. Use it for scenario exploration only.</p></div>
+</div>
+</section>
+
+<section class="page" id="page-journal">
+<div class="page-head"><div><div class="eyebrow">Invest with intention</div><h1>Decision journal</h1><p>Record why you made a move, not just what you bought or sold.</p></div><button class="btn primary" id="addJournal">＋ New journal entry</button></div>
+<div class="dashboard-grid">
+<div class="panel"><div class="panel-title">Decision notes</div><div class="panel-sub">Your investment thesis and confidence level</div><div id="journalList" style="margin-top:12px"></div></div>
+<div class="panel"><div class="panel-title">Reflection prompts</div><div class="statline"><span>Did I follow my thesis?</span><b>Review after 30 days</b></div><div class="statline"><span>Was this a planned decision?</span><b>Avoid FOMO</b></div><div class="statline"><span>What would change my mind?</span><b>Define in advance</b></div><p class="disclaimer">Journal entries are personal notes and are not automatically linked to transaction performance in this prototype.</p></div>
+</div>
+</section>
+
+<section class="page" id="page-timetravel">
+<div class="page-head"><div><div class="eyebrow">Look back, learn forward</div><h1>Time travel</h1><p>Replay your portfolio using transactions dated on or before a selected day.</p></div></div>
+<div class="section-grid">
+<div class="panel"><div class="panel-title">Historical portfolio snapshot</div><div class="panel-sub" style="margin-bottom:18px">Select a date to reconstruct holdings from the transaction ledger.</div>
+<div class="field"><label>As of date</label><input id="travelDate" type="date"></div><button class="btn primary" id="travelBtn">Replay portfolio →</button><div id="travelResult" style="margin-top:18px"></div>
+</div>
+<div class="panel"><div class="panel-title">Replay rules</div><div class="statline"><span>Included</span><b>Transactions up to date</b></div><div class="statline"><span>Excluded</span><b>Later transactions</b></div><div class="statline"><span>Pricing</span><b>Latest demo price</b></div><p class="disclaimer">This is a transaction replay, not a historical market-price reconstruction. Historical price feeds are not connected.</p></div>
+</div>
+</section>
+</div>
+</main>
+</div></div>
+
+<div class="modal-backdrop" id="txnModal"><div class="modal">
+<h2>Add transaction</h2><p>Update your local demo portfolio ledger.</p>
+<div class="form-grid">
+<div class="field"><label>Transaction type</label><select id="fType"><option>BUY</option><option>SELL</option><option>DIVIDEND</option></select></div>
+<div class="field"><label>Stock symbol</label><input id="fSymbol" placeholder="e.g. TCS" maxlength="15"></div>
+<div class="field"><label>Date</label><input id="fDate" type="date"></div>
+<div class="field"><label>Quantity</label><input id="fQty" type="number" min="1" value="1"></div>
+<div class="field"><label>Price per share (₹)</label><input id="fPrice" type="number" min="0.01" step="0.01"></div>
+<div class="field"><label>Fees (₹)</label><input id="fFees" type="number" min="0" step="0.01" value="0"></div>
+</div>
+<div class="modal-actions"><button class="btn" id="cancelModal">Cancel</button><button class="btn primary" id="saveTxn">Save transaction</button></div>
+</div></div>
+
+<div class="modal-backdrop" id="journalModal"><div class="modal">
+<h2>New decision note</h2><p>Capture the thinking behind an investment decision.</p>
+<div class="field"><label>Stock symbol</label><input id="jSymbol" placeholder="e.g. INFY"></div>
+<div class="field"><label>Reason tag</label><select id="jReason"><option>LONG_TERM</option><option>VALUATION</option><option>NEWS</option><option>TECHNICAL</option><option>TIP</option><option>FOMO</option></select></div>
+<div class="field"><label>Confidence (1–5)</label><select id="jConfidence"><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option></select></div>
+<div class="field"><label>Investment thesis</label><textarea id="jNote" placeholder="Why are you considering this decision?"></textarea></div>
+<div class="modal-actions"><button class="btn" id="cancelJournal">Cancel</button><button class="btn primary" id="saveJournal">Save note</button></div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
